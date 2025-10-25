@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PawHaven - Pet Shelter{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'shelter/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'shelter/css/components.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Header with Navigation -->
+    <header class="main-header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <img src="{% static 'shelter/images/icons/logo.png' %}" alt="PawHaven Logo">
+                    <span class="logo-text">PawHaven</span>
+                </div>
+                
+                <!-- Desktop Navigation Menu -->
+                <ul class="nav-menu">
+                    <li><a href="{% url 'home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a></li>
+                    <li><a href="{% url 'pets' %}" class="nav-link {% if request.resolver_match.url_name == 'pets' %}active{% endif %}">Find a Pet</a></li>
+                    <li><a href="{% url 'about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">About Us</a></li>
+                    <li><a href="{% url 'success_stories' %}" class="nav-link {% if request.resolver_match.url_name == 'success_stories' %}active{% endif %}">Success Stories</a></li>
+                    <li><a href="{% url 'contact' %}" class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a></li>
+                    <li><a href="{% url 'adoption_process' %}" class="nav-link btn-adopt">Adopt Now</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Django Messages -->
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>PawHaven Shelter</h4>
+                    <p>Dedicated to finding loving homes for pets in need since 2016.</p>
+                    <ul>
+                        <li><a href="{% url 'pets' %}">Available Pets</a></li>
+                        <li><a href="{% url 'adoption_process' %}">Adoption Process</a></li>
+                        <li><a href="{% url 'about' %}">About Us</a></li>
+                        <li><a href="{% url 'contact' %}">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <div class="contact-info">
+                        <p>📍 123 Pet Street, Animal City, AC 12345</p>
+                        <p>📞 (555) 123-PETS</p>
+                        <p>✉️ info@pawhaven.com</p>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Shelter Hours</h4>
+                    <div class="hours">
+                        <p>Monday - Friday: 10am - 6pm</p>
+                        <p>Saturday: 9am - 5pm</p>
+                        <p>Sunday: 12pm - 4pm</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 PawHaven Pet Shelter. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{% static 'shelter/js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
