@@ -118,6 +118,9 @@ class AdoptionApplication(models.Model):
         ('completed', 'Adoption Completed'),
     ]
     
+    # User Link (optional - for logged-in users)
+    user = models.ForeignKey('auth.User', on_delete=models.SET_NULL, null=True, blank=True, related_name='applications')
+    
     # Applicant Information
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)

@@ -26,6 +26,13 @@
                     <li><a href="{% url 'about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">About Us</a></li>
                     <li><a href="{% url 'success_stories' %}" class="nav-link {% if request.resolver_match.url_name == 'success_stories' %}active{% endif %}">Success Stories</a></li>
                     <li><a href="{% url 'contact' %}" class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a></li>
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'account' %}" class="nav-link {% if request.resolver_match.url_name == 'account' or request.resolver_match.url_name == 'user_applications' %}active{% endif %}">My Account</a></li>
+                    <li><a href="{% url 'logout' %}" class="nav-link">Logout</a></li>
+                    {% else %}
+                    <li><a href="{% url 'login' %}" class="nav-link {% if request.resolver_match.url_name == 'login' %}active{% endif %}">Login</a></li>
+                    <li><a href="{% url 'register' %}" class="nav-link {% if request.resolver_match.url_name == 'register' %}active{% endif %}">Register</a></li>
+                    {% endif %}
                     <li><a href="{% url 'adoption_process' %}" class="nav-link btn-adopt">Adopt Now</a></li>
                 </ul>
             </div>

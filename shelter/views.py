@@ -1,8 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView
 from django.contrib import messages
+from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.urls import reverse
 from .models import Pet, AdoptionApplication, ContactMessage, SuccessStory
+from .forms import CustomUserCreationForm, UserUpdateForm
 
 
 def home(request):
@@ -126,12 +130,28 @@ def contact(request):
     
     return render(request, 'shelter/contact.html')
 
+def adoption_gate(request, pet_id=None):
+    """
+    If logged in -> jump straight to the adoption form.
+    If logged out -> show a page with Login / Register options,
+                     both include ?next=<adoption_form_url>
+    """
+    # build where we want to land after auth
+    next_url = (
+        reverse('adoption_application_pet', args=[pet_id])
+        if pet_id else reverse('adoption_application')
+    )
+
+    if request.user.is_authenticated:
+        return redirect(next_url)
+
+    return render(request, 'shelter/adoption_gate.html', {'next': next_url})
 
 def adoption_process(request):
     """Adoption process information page"""
     return render(request, 'shelter/adoption.html')
 
-
+@login_required(login_url='/accounts/login/')
 def adoption_application(request, pet_id=None):
     """Adoption application form"""
     pet = None
@@ -139,8 +159,12 @@ def adoption_application(request, pet_id=None):
         pet = get_object_or_404(Pet, pk=pet_id, status='available')
     
     if request.method == 'POST':
+        # Get the user if authenticated, otherwise None
+        user = request.user if request.user.is_authenticated else None
+        
         # Get form data
         application = AdoptionApplication.objects.create(
+            user=user,  # Link to user if logged in
             first_name=request.POST.get('first_name'),
             last_name=request.POST.get('last_name'),
             email=request.POST.get('email'),
@@ -159,7 +183,12 @@ def adoption_application(request, pet_id=None):
         )
         
         messages.success(request, 'Your application has been submitted successfully! We will review it and contact you soon.')
-        return redirect('pet_detail', pk=application.pet.pk, slug=application.pet.slug)
+        
+        # If user is logged in, redirect to their applications page
+        if request.user.is_authenticated:
+            return redirect('user_applications')
+        else:
+            return redirect('pet_detail', pk=application.pet.pk, slug=application.pet.slug)
     
     context = {
         'pet': pet,
@@ -178,3 +207,74 @@ def success_stories(request):
         'featured_stories': featured_stories,
     }
     return render(request, 'shelter/success.html', context)
+
+
+# Authentication Views
+
+def register(request):
+    if request.user.is_authenticated:
+        return redirect('account')
+
+    next_url = request.GET.get('next') or request.POST.get('next')
+
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, f'Welcome to PawHaven, {user.username}!')
+            return redirect(next_url or 'account')
+    else:
+        form = CustomUserCreationForm()
+
+    return render(request, 'shelter/register.html', {'form': form, 'next': next_url})
+
+
+@login_required
+def account(request):
+    """User account dashboard"""
+    # Get applications linked to this user OR matching their email
+    recent_applications = AdoptionApplication.objects.filter(
+        Q(user=request.user) | Q(email=request.user.email)
+    ).order_by('-submitted_at')[:3]
+    
+    context = {
+        'recent_applications': recent_applications,
+    }
+    return render(request, 'shelter/account.html', context)
+
+
+@login_required
+def user_applications(request):
+    """View all user's adoption applications"""
+    # Get applications linked to this user OR matching their email
+    applications = AdoptionApplication.objects.filter(
+        Q(user=request.user) | Q(email=request.user.email)
+    ).order_by('-submitted_at')
+    
+    context = {
+        'applications': applications,
+    }
+    return render(request, 'shelter/user_applications.html', context)
+
+
+@login_required
+def edit_profile(request):
+    """Edit user profile information"""
+    if request.method == 'POST':
+        form = UserUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile has been updated successfully!')
+            return redirect('account')
+    else:
+        form = UserUpdateForm(instance=request.user)
+    
+    return render(request, 'shelter/edit_profile.html', {'form': form})
+
+
+def custom_logout(request):
+    """Custom logout view to ensure proper redirect"""
+    logout(request)
+    messages.success(request, 'You have been logged out successfully.')
+    return redirect('home')
