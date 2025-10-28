@@ -16,18 +16,19 @@ urlpatterns = [
     path('success-stories/', views.success_stories, name='success_stories'),
 
     # Adoption
-   path('adoption/apply/', views.adoption_application, name='adoption_application'),
+    path('adoption/process/', views.adoption_process, name='adoption_process'),
+    path('adoption/apply/', views.adoption_application, name='adoption_application'),
     path('adoption/apply/<int:pet_id>/', views.adoption_application, name='adoption_application_pet'),
 
- # If you kept a custom site login, keep its name distinct:
+    # If you kept a custom site login, keep its name distinct:
     path('login/', auth_views.LoginView.as_view(
         template_name='shelter/login.html',
         redirect_authenticated_user=True
     ), name='site_login'),
 
-    
+
     # Gate (what your "Apply" buttons should link to)
-  path('adoption/start/', views.adoption_gate, name='adoption_gate'),
+    path('adoption/start/', views.adoption_gate, name='adoption_gate'),
     path('adoption/start/<int:pet_id>/', views.adoption_gate, name='adoption_gate_pet'),
 
     # Account area

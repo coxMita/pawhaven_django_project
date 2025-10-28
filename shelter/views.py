@@ -151,7 +151,7 @@ def adoption_process(request):
     """Adoption process information page"""
     return render(request, 'shelter/adoption.html')
 
-@login_required(login_url='/accounts/login/')
+@login_required(login_url='site_login')
 def adoption_application(request, pet_id=None):
     """Adoption application form"""
     pet = None
