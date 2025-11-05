@@ -26,12 +26,21 @@
                     <li><a href="{% url 'about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">About Us</a></li>
                     <li><a href="{% url 'success_stories' %}" class="nav-link {% if request.resolver_match.url_name == 'success_stories' %}active{% endif %}">Success Stories</a></li>
                     <li><a href="{% url 'contact' %}" class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a></li>
+                    
                     {% if user.is_authenticated %}
-                    <li><a href="{% url 'account' %}" class="nav-link {% if request.resolver_match.url_name == 'account' or request.resolver_match.url_name == 'user_applications' %}active{% endif %}">My Account</a></li>
-                    <li><a href="{% url 'logout' %}" class="nav-link">Logout</a></li>
+                        {% if user.is_staff or user.is_superuser %}
+                        <!-- Admin Navigation -->
+                        <li><a href="{% url 'admin_dashboard' %}" class="nav-link admin-nav-link {% if 'admin_dashboard' in request.resolver_match.url_name or 'admin_applications' in request.resolver_match.url_name or 'admin_pets' in request.resolver_match.url_name or 'admin_contacts' in request.resolver_match.url_name %}active{% endif %}">
+                            🛡️ Admin Dashboard
+                        </a></li>
+                        {% else %}
+                        <!-- Regular User Navigation -->
+                        <li><a href="{% url 'account' %}" class="nav-link {% if request.resolver_match.url_name == 'account' or request.resolver_match.url_name == 'user_applications' %}active{% endif %}">My Account</a></li>
+                        {% endif %}
+                        <li><a href="{% url 'logout' %}" class="nav-link logout-link">Logout ({{ user.username }})</a></li>
                     {% else %}
-                   <li><a href="{% url 'site_login' %}" class="nav-link {% if request.resolver_match.url_name == 'site_login' %}active{% endif %}">Login</a></li>
-                    <li><a href="{% url 'register' %}" class="nav-link {% if request.resolver_match.url_name == 'register' %}active{% endif %}">Register</a></li>
+                        <li><a href="{% url 'site_login' %}" class="nav-link {% if request.resolver_match.url_name == 'site_login' %}active{% endif %}">Login</a></li>
+                        <li><a href="{% url 'register' %}" class="nav-link {% if request.resolver_match.url_name == 'register' %}active{% endif %}">Register</a></li>
                     {% endif %}
                     <li><a href="{% url 'adoption_gate' %}" class="nav-link btn-adopt">Adopt Now</a></li>               
                 </ul>
@@ -99,5 +108,58 @@
     <!-- JavaScript -->
     <script src="{% static 'shelter/js/main.js' %}"></script>
     {% block extra_js %}{% endblock %}
+
+    <style>
+    /* Improved navigation styling */
+    .nav-menu {
+        gap: var(--spacing-md);
+    }
+    
+    .admin-nav-link {
+        background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+        color: var(--white) !important;
+        border-radius: var(--radius-md);
+        padding: var(--spacing-sm) var(--spacing-lg) !important;
+        font-weight: 600;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+    
+    .admin-nav-link:hover {
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .admin-nav-link.active {
+        border-color: rgba(255, 255, 255, 0.3);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .logout-link {
+        font-size: var(--font-size-sm);
+        opacity: 0.8;
+    }
+    
+    .logout-link:hover {
+        opacity: 1;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 1200px) {
+        .nav-menu {
+            gap: var(--spacing-sm);
+        }
+        
+        .nav-link {
+            padding: var(--spacing-xs) var(--spacing-sm) !important;
+            font-size: var(--font-size-sm);
+        }
+        
+        .admin-nav-link {
+            padding: var(--spacing-xs) var(--spacing-md) !important;
+        }
+    }
+    </style>
 </body>
 </html>
