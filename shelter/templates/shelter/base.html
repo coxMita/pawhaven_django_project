@@ -145,19 +145,91 @@
         opacity: 1;
     }
     
-    /* Responsive adjustments */
-    @media (max-width: 1200px) {
+    /* RESPONSIVE FIXES FOR LAPTOP SCREENS */
+    
+    /* For laptop screens (1200px - 1400px) */
+    @media (max-width: 1400px) {
         .nav-menu {
-            gap: var(--spacing-sm);
+            gap: 0.5rem;
         }
         
         .nav-link {
-            padding: var(--spacing-xs) var(--spacing-sm) !important;
-            font-size: var(--font-size-sm);
+            padding: 0.4rem 0.7rem !important;
+            font-size: 0.85rem;
         }
         
         .admin-nav-link {
-            padding: var(--spacing-xs) var(--spacing-md) !important;
+            padding: 0.4rem 0.8rem !important;
+            font-size: 0.85rem;
+        }
+        
+        .logout-link {
+            font-size: 0.75rem;
+        }
+        
+        .logo-text {
+            font-size: 1.3rem;
+        }
+    }
+
+    /* For smaller laptop screens (below 1200px) */
+    @media (max-width: 1200px) {
+        .nav-container {
+            padding: 0 0.5rem;
+        }
+        
+        .nav-menu {
+            gap: 0.3rem;
+        }
+        
+        .nav-link {
+            padding: 0.3rem 0.5rem !important;
+            font-size: 0.8rem;
+        }
+        
+        .admin-nav-link {
+            padding: 0.3rem 0.6rem !important;
+            font-size: 0.8rem;
+        }
+        
+        .btn-adopt {
+            padding: 0.3rem 0.6rem !important;
+            font-size: 0.8rem;
+        }
+        
+        .logo-text {
+            font-size: 1.2rem;
+        }
+        
+        .nav-logo img {
+            height: 30px;
+        }
+    }
+
+    /* Make username shorter on small screens */
+    @media (max-width: 1300px) {
+        .logout-link {
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+    
+    /* Extra small laptops */
+    @media (max-width: 1100px) {
+        .nav-menu {
+            gap: 0.2rem;
+        }
+        
+        .nav-link {
+            padding: 0.3rem 0.4rem !important;
+            font-size: 0.75rem;
+        }
+        
+        .admin-nav-link {
+            padding: 0.3rem 0.5rem !important;
+            font-size: 0.75rem;
         }
     }
     </style>
