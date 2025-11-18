@@ -63,12 +63,6 @@ class PetListView(ListView):
         if sizes:
             queryset = queryset.filter(size__in=sizes)
         
-        # Filter by age
-        age_filter = self.request.GET.get('age')
-        if age_filter and age_filter != 'all':
-            # This is simplified - you might want more complex age filtering
-            queryset = queryset.filter(age__icontains=age_filter)
-        
         # Filter by special needs
         if self.request.GET.get('specialNeeds'):
             queryset = queryset.filter(special_needs=True)
@@ -135,12 +129,7 @@ def contact(request):
     return render(request, 'shelter/contact.html')
 
 def adoption_gate(request, pet_id=None):
-    """
-    If logged in -> jump straight to the adoption form.
-    If logged out -> show a page with Login / Register options,
-                     both include ?next=<adoption_form_url>
-    """
-    # build where we want to land after auth
+    """Redirect to adoption form if logged in, otherwise to login page"""
     next_url = (
         reverse('adoption_application_pet', args=[pet_id])
         if pet_id else reverse('adoption_application')
@@ -148,8 +137,9 @@ def adoption_gate(request, pet_id=None):
 
     if request.user.is_authenticated:
         return redirect(next_url)
-
-    return render(request, 'shelter/adoption_gate.html', {'next': next_url})
+    
+    
+    return redirect(f"{reverse('site_login')}?next={next_url}")
 
 def adoption_process(request):
     """Adoption process information page"""

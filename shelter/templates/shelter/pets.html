@@ -84,20 +84,17 @@
                             <div class="filter-options">
                                 <label class="filter-option">
                                     <input type="checkbox" name="size" value="Small"
-                                           {% if 'Small' in request.GET.getlist.size %}checked{% endif %}
-                                           onchange="this.form.submit()">
+                                           {% if 'Small' in request.GET.getlist.size %}checked{% endif %}>
                                     Small
                                 </label>
                                 <label class="filter-option">
                                     <input type="checkbox" name="size" value="Medium"
-                                           {% if 'Medium' in request.GET.getlist.size %}checked{% endif %}
-                                           onchange="this.form.submit()">
+                                           {% if 'Medium' in request.GET.getlist.size %}checked{% endif %}>
                                     Medium
                                 </label>
                                 <label class="filter-option">
                                     <input type="checkbox" name="size" value="Large"
-                                           {% if 'Large' in request.GET.getlist.size %}checked{% endif %}
-                                           onchange="this.form.submit()">
+                                           {% if 'Large' in request.GET.getlist.size %}checked{% endif %}>
                                     Large
                                 </label>
                             </div>
@@ -110,11 +107,15 @@
                                 <label class="filter-option">
                                     <input type="checkbox" name="specialNeeds" value="true"
                                            {% if request.GET.specialNeeds %}checked{% endif %}
-                                           onchange="this.form.submit()">
+                                           >
                                     Special Needs
                                 </label>
                             </div>
                         </div>
+
+                        <button type="submit" class="btn btn-primary apply-filters">
+                            Apply Filters
+                        </button>
 
                         <!-- Clear Filters Button -->
                         <a href="{% url 'pets' %}" class="btn btn-outline clear-filters">
